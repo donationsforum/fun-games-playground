@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fun Games Playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root{
+  --sky:#5ec8ff; --sun:#ffd43b; --pink:#ff6fb5; --lime:#7ed957; --purple:#9b6bff; --orange:#ff9a3c; --ink:#2b2350;
+  --bg:#fff7e0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:'Nunito',system-ui,sans-serif; font-weight:600; color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%, #ffe3f1 0 90px, transparent 91px),
+    radial-gradient(circle at 92% 22%, #d9f3ff 0 120px, transparent 121px),
+    radial-gradient(circle at 80% 90%, #e4f9d6 0 140px, transparent 141px),
+    var(--bg);
+  background-attachment:fixed; min-height:100vh;
+}
+header{
+  text-align:center; padding:28px 16px 18px;
+  background:linear-gradient(135deg,var(--purple),var(--pink) 55%,var(--orange));
+  border-bottom-left-radius:40px; border-bottom-right-radius:40px;
+  box-shadow:0 8px 0 rgba(43,35,80,.15);
+}
+h1{
+  font-family:'Fredoka',sans-serif; font-weight:700; margin:0;
+  font-size:clamp(2rem,7vw,3.8rem); color:#fff; letter-spacing:1px;
+  text-shadow:0 4px 0 rgba(43,35,80,.35);
+}
+h1 span:nth-child(1){color:var(--sun)} h1 span:nth-child(2){color:#fff}
+h1 span:nth-child(3){color:#b6f7a0} h1 span:nth-child(4){color:#aee6ff}
+.tag{margin:6px 0 18px; color:#fff; font-weight:800; font-size:clamp(.95rem,3vw,1.2rem)}
+.search{
+  display:flex; align-items:center; gap:10px; max-width:520px; margin:0 auto;
+  background:#fff; border:4px solid var(--ink); border-radius:999px; padding:6px 8px 6px 18px;
+  box-shadow:0 5px 0 var(--ink);
+}
+.search input{
+  flex:1; min-width:0; border:0; outline:0; background:transparent;
+  font:700 1.1rem 'Nunito',sans-serif; color:var(--ink); padding:8px 0;
+}
+.search input::-webkit-search-cancel-button,
+.search input::-webkit-search-decoration{-webkit-appearance:none; appearance:none; display:none}
+.search input::-ms-clear{display:none}
+.search button{
+  border:0; background:var(--sun); color:var(--ink); font:700 1.1rem 'Fredoka',sans-serif;
+  border-radius:999px; padding:8px 16px; cursor:pointer; display:none;
+}
+.search button.show{display:block}
+.search button:focus-visible{outline:3px solid var(--ink)}
+.cats{
+  display:flex; gap:10px; max-width:1200px; margin:22px auto 0; padding:4px 16px 8px;
+  overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch;
+}
+.cats::-webkit-scrollbar{display:none}
+@media (min-width:900px){.cats{flex-wrap:wrap; justify-content:center; overflow:visible}}
+.chip{
+  flex:none; border:3px solid var(--ink); border-radius:999px; background:#fff; color:var(--ink);
+  font:600 1rem 'Fredoka',sans-serif; padding:7px 16px; cursor:pointer;
+  box-shadow:0 4px 0 var(--ink); transition:transform .12s;
+}
+.chip:active{transform:translateY(3px); box-shadow:0 1px 0 var(--ink)}
+.chip:focus-visible{outline:4px solid var(--sun); outline-offset:2px}
+.chip[aria-pressed="true"]{background:var(--sun)}
+main{max-width:1200px; margin:0 auto; padding:24px 16px 48px}
+.count{font-family:'Fredoka',sans-serif; font-size:1.2rem; margin:0 0 16px; text-align:center}
+.count:empty{display:none}
+.grid{
+  display:grid; gap:18px;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+}
+@media (min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:24px}}
+.card{
+  --c:var(--sky);
+  display:flex; flex-direction:column; align-items:center; text-decoration:none; color:var(--ink);
+  background:var(--c); border:4px solid var(--ink); border-radius:28px; padding:12px 12px 14px;
+  box-shadow:0 7px 0 var(--ink); transition:transform .15s, box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.card:nth-child(6n+1){--c:var(--sky)} .card:nth-child(6n+2){--c:var(--sun)}
+.card:nth-child(6n+3){--c:var(--pink)} .card:nth-child(6n+4){--c:var(--lime)}
+.card:nth-child(6n+5){--c:var(--purple)} .card:nth-child(6n+6){--c:var(--orange)}
+.card:hover,.card:focus-visible{transform:translateY(-6px) rotate(-1.5deg); box-shadow:0 13px 0 var(--ink); outline:none}
+.card:active{transform:translateY(4px); box-shadow:0 2px 0 var(--ink)}
+.card:focus-visible{outline:4px solid #fff; outline-offset:2px}
+.thumb{
+  width:100%; aspect-ratio:1; border-radius:20px; background:#fff; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; border:3px solid var(--ink);
+}
+.thumb img{width:100%; height:100%; object-fit:cover; display:block}
+.thumb .ph{font-size:3rem}
+.name{
+  font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.1rem; line-height:1.15;
+  margin-top:12px; text-align:center; background:#fff; border:3px solid var(--ink);
+  border-radius:999px; padding:5px 12px; width:100%;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.msg{text-align:center; font-family:'Fredoka',sans-serif; font-size:1.4rem; padding:40px 12px}
+.msg .big{font-size:4rem; display:block}
+.msg small{display:block; font:600 1rem 'Nunito',sans-serif; margin-top:6px}
+.skel{height:230px; border-radius:28px; border:4px solid var(--ink); background:#fff; opacity:.6; animation:pulse 1.1s ease-in-out infinite alternate}
+@keyframes pulse{to{opacity:.25}}
+footer{text-align:center; padding:0 16px 28px; font-weight:800}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>Fun</span> <span>Games</span> <span>Play</span><span>ground</span> 🎮</h1>
+  <p class="tag">Pick a game and start playing</p>
+  <label class="search" role="search">
+    <span aria-hidden="true">🔍</span>
+    <input id="q" type="search" placeholder="Search for a game…" autocomplete="off" aria-label="Search games">
+    <button id="clear" type="button" aria-label="Clear search">Clear</button>
+  </label>
+</header>
+<nav class="cats" id="cats" aria-label="Game categories"></nav>
+
+<main>
+  <p class="count" id="count" aria-live="polite"></p>
+  <div class="grid" id="grid" aria-busy="true"></div>
+  <div id="msg"></div>
+</main>
+<footer>Have fun and play Online</footer>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/13GdI64WhSGze_zgrk2truZ6EmV656ep1AA64x-yXhxo/export?format=csv";
+const PROXY = "https://api.allorigins.win/raw?url=";
+const EMOJIS = ["🚗","🧩","🏀","🐸","🚀","👾","🎯","🦄","🍭","⚽"];
+
+const grid = document.getElementById("grid");
+const msg = document.getElementById("msg");
+const count = document.getElementById("count");
+const q = document.getElementById("q");
+const clearBtn = document.getElementById("clear");
+let games = [];
+
+function showSkeleton(){
+  grid.innerHTML = "";
+  for(let i=0;i<12;i++){const d=document.createElement("div");d.className="skel";grid.appendChild(d)}
+}
+
+function showMessage(emoji, title, sub){
+  msg.innerHTML = "";
+  const box = document.createElement("div"); box.className = "msg";
+  const e = document.createElement("span"); e.className = "big"; e.textContent = emoji;
+  const t = document.createElement("div"); t.textContent = title;
+  box.append(e, t);
+  if(sub){const s=document.createElement("small"); s.textContent=sub; box.appendChild(s)}
+  msg.appendChild(box);
+}
+
+function safeUrl(u){
+  try{
+    const url = new URL(u.trim(), location.href);
+    return /^https?:$/.test(url.protocol) ? url.href : "";
+  }catch(e){return ""}
+}
+
+function parse(text){
+  const res = Papa.parse(text.trim(), {skipEmptyLines:true});
+  let rows = res.data;
+  if(!rows.length) return [];
+  const head = rows[0].map(c => c.trim().toLowerCase());
+  let ni=0, ii=1, li=2, ci=3;
+  if(head.includes("name") || head.includes("link")){
+    ni = head.indexOf("name"); ii = head.indexOf("icon"); li = head.indexOf("link");
+    ci = head.findIndex(h => h.startsWith("cat") || h.startsWith("gen") || h.startsWith("type"));
+    if(ni<0) ni=0; if(ii<0) ii=1; if(li<0) li=2; if(ci<0) ci=3;
+    rows = rows.slice(1);
+  }
+  return rows.map(r => ({
+    name:(r[ni]||"").trim(), icon:safeUrl(r[ii]||""), link:safeUrl(r[li]||""),
+    cats:(r[ci]||"").split(/[;,|]/).map(c => c.trim().toLowerCase()).filter(Boolean)
+  })).filter(g => g.name && g.link);
+}
+
+async function load(){
+  showSkeleton();
+  let text;
+  try{
+    const r = await fetch(CSV_URL); if(!r.ok) throw 0; text = await r.text();
+  }catch(e){
+    try{
+      const r = await fetch(PROXY + encodeURIComponent(CSV_URL)); if(!r.ok) throw 0; text = await r.text();
+    }catch(e2){
+      grid.innerHTML = ""; grid.setAttribute("aria-busy","false"); count.textContent = "";
+      showMessage("😢","Oops! We couldn't load the games.","Check your internet and refresh the page. Make sure the sheet is shared with “Anyone with the link”.");
+      return;
+    }
+  }
+  games = parse(text);
+  grid.setAttribute("aria-busy","false");
+  render();
+}
+
+function makeCard(g, i){
+  const a = document.createElement("a");
+  a.className = "card"; a.href = g.link; a.target = "_blank"; a.rel = "noopener noreferrer";
+  a.setAttribute("aria-label", "Play " + g.name);
+  const th = document.createElement("div"); th.className = "thumb";
+  const fallback = () => { th.innerHTML = ""; const p=document.createElement("span"); p.className="ph"; p.textContent=EMOJIS[i%EMOJIS.length]; th.appendChild(p) };
+  if(g.icon){
+    const img = document.createElement("img");
+    img.src = g.icon; img.alt = ""; img.loading = "lazy"; img.referrerPolicy = "no-referrer";
+    img.onerror = fallback; th.appendChild(img);
+  } else fallback();
+  const n = document.createElement("div"); n.className = "name"; n.textContent = g.name; n.title = g.name;
+  a.append(th, n);
+  return a;
+}
+
+const CATEGORIES = ["All","Action","Puzzle","Racing","Horror","Adventure","Shooter","Strategy","Arcade","Sports","Casual"];
+let activeCat = "all";
+const catsEl = document.getElementById("cats");
+
+function buildChips(){
+  CATEGORIES.forEach(label => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.dataset.cat = label.toLowerCase();
+    b.textContent = label;
+    b.setAttribute("aria-pressed", label === "All" ? "true" : "false");
+    b.addEventListener("click", () => {
+      activeCat = b.dataset.cat;
+      catsEl.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c === b)));
+      render();
+    });
+    catsEl.appendChild(b);
+  });
+}
+buildChips();
+
+function render(){
+  const term = q.value.trim().toLowerCase();
+  clearBtn.classList.toggle("show", !!term);
+  const list = games.filter(g =>
+    g.name.toLowerCase().includes(term) &&
+    (activeCat === "all" || g.cats.some(c => c.includes(activeCat))));
+  grid.innerHTML = ""; msg.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  list.forEach((g,i) => frag.appendChild(makeCard(g,i)));
+  grid.appendChild(frag);
+  if(!games.length){ count.textContent = ""; showMessage("🎈","No games yet!","Add some games to the sheet and refresh."); }
+  else if(!list.length){ count.textContent = ""; showMessage("🔎","No games found!", activeCat === "all" ? "Try a different word." : "Try another category or a different word."); }
+  else count.textContent = "";
+}
+
+q.addEventListener("input", render);
+clearBtn.addEventListener("click", () => { q.value = ""; render(); q.focus(); });
+load();
+</script>
+</body>
+</html>
