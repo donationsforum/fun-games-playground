@@ -3,7 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fun Games Playground</title>
+<title>Fun Games Playground – Free Online Games for Kids</title>
+<meta name="description" content="Play free online games for kids! Fun puzzle, racing, adventure, arcade and sports games that run right in your browser on phone, tablet or computer. No download needed.">
+<meta name="keywords" content="free online games, kids games, games for kids, browser games, puzzle games, racing games, arcade games, casual games">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#9b6bff">
+<!-- SEO: replace https://yourdomain.com/ with your real website address (keep the trailing slash) -->
+<link rel="canonical" href="https://fungamesonline.online/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Fun Games Playground">
+<meta property="og:title" content="Fun Games Playground – Free Online Games for Kids">
+<meta property="og:description" content="Play free online games for kids! Puzzle, racing, adventure, arcade and more. No download needed.">
+<meta property="og:url" content="https://yourdomain.com/">
+<meta property="og:image" content="https://i.imgur.com/On3uYVV.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fun Games Playground – Free Online Games for Kids">
+<meta name="twitter:description" content="Play free online games for kids! Puzzle, racing, adventure, arcade and more.">
+<meta name="twitter:image" content="https://i.imgur.com/On3uYVV.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Fun Games Playground","url":"https://yourdomain.com/","description":"Free online games for kids that play in your browser.","inLanguage":"en","potentialAction":{"@type":"SearchAction","target":"https://yourdomain.com/?q={search_term_string}","query-input":"required name=search_term_string"}}
+</script>
 <!-- FAVICON: change the URL below to swap the icon -->
 <link rel="icon" type="image/png" href="https://i.imgur.com/On3uYVV.png">
 <link rel="apple-touch-icon" href="https://i.imgur.com/On3uYVV.png">
@@ -165,6 +184,7 @@ footer{text-align:center; padding:0 16px 28px; font-weight:800}
   </section>
   <p class="count" id="count" aria-live="polite"></p>
   <div class="grid" id="grid" aria-busy="true"></div>
+  <noscript><p class="msg">Please turn on JavaScript to see and play our free online games.</p></noscript>
   <div id="msg"></div>
 
   <!-- Adsterra banner (320x50). Keep this block exactly where you want the ad to appear. -->
@@ -183,9 +203,9 @@ footer{text-align:center; padding:0 16px 28px; font-weight:800}
 </main>
 <section class="about" id="about">
   <h2>About Us</h2>
-  <p>Welcome to Fun Games Playground Here you can find fun free games for kids. Pick a game tap it and start playing.</p>
+  <p>Welcome to Fun Games Playground We collect fun free online games for kids Pick a game tap it and start playing.</p>
   <h3>Contact us</h3>
-  <p>Got a game idea or found a problem? Email us at <a href="mailto:Kzack5431@gmail.com">Kzack5431@gmail.com</a></p>
+  <p>Got a game idea or found a problem? Email us at <a href="mailto:fungamesonline@gmail.com">fungamesonline@gmail.com</a></p>
 </section>
 
 <script>
@@ -269,7 +289,7 @@ function makeCard(g, i){
   const fallback = () => { th.innerHTML = ""; const p=document.createElement("span"); p.className="ph"; p.textContent=EMOJIS[i%EMOJIS.length]; th.appendChild(p) };
   if(g.icon){
     const img = document.createElement("img");
-    img.src = g.icon; img.alt = ""; img.loading = "lazy"; img.referrerPolicy = "no-referrer";
+    img.src = g.icon; img.alt = g.name + " game"; img.loading = "lazy"; img.referrerPolicy = "no-referrer";
     img.onerror = fallback; th.appendChild(img);
   } else fallback();
   const n = document.createElement("div"); n.className = "name"; n.textContent = g.name; n.title = g.name;
@@ -367,6 +387,7 @@ function render(){
   else count.textContent = "";
 }
 
+const urlQ = new URLSearchParams(location.search).get("q"); if(urlQ) q.value = urlQ;
 q.addEventListener("input", render);
 clearBtn.addEventListener("click", () => { q.value = ""; render(); q.focus(); });
 load();
